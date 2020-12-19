@@ -1,6 +1,3 @@
-;var = $99
-;input = $1000
-
 ; Store the pointer to the current input at $00,$01
 input_pointer_lsb = $00
 input_pointer_msb = $01
@@ -34,8 +31,6 @@ pow_msb_2 = $05
 readNumber_lsb = $06
 readNumber_msb = $07
 
-
-
 .org $C000
 
 _init:
@@ -54,7 +49,7 @@ _start:
 		sta j_msb
 
 _mainLoop:
-		; read the first number out of input
+		; read the current number out of input
 		jsr _readNumber
 
 		; Transfer it to x
@@ -72,8 +67,6 @@ _mainLoop:
 		adc #00 ; add 0 to add the carry bit
 		sta j_msb
 
-
-
 		_subLoop:
 			; Read the next number
 			jsr _readNumber
@@ -86,8 +79,6 @@ _mainLoop:
 			lda x_msb
 			adc readNumber_msb
 			sta sum_msb
-
-			;jmp _brk
 
 			; check if the numbers sum to 2020 ($07E4)
 			cmp #$07
@@ -110,8 +101,6 @@ _mainLoop:
 				ldy #00
 
 				jmp _mainLoop
-
-				;jmp _subLoop
 
 		_equal:
 			; Multiply x * readNumber
@@ -137,25 +126,7 @@ _mainLoop:
 				dex
 				bne _shift_r
 
-			jmp _brk
-
-		;brk
-		;jsr _readNumber
-		;jsr _readNumber
-		jmp _brk
-		; pull one byte off of the input to check if
-		;jsr _readNumber
-		;brk
-
-		; test _pow
-		;lda #03
-		;sta pow_lsb
-		;lda #03
-		;tax
-		;jsr _pow
-
 _end:
-
 		BRK ; Break to tell our emulator to stop
 
 _pow:
@@ -262,7 +233,6 @@ _readNumber:
 		_readNumberLoop:
 			lda ($00),Y ; Load the current byte into A
 			pha ; store the byte on the stack
-			;inx ; increment x and y
 
 			; Increment y
 			iny
@@ -312,7 +282,3 @@ _readNumber:
 			pla
 			plp
 			rts
-
-_brk:
-	nop
-	nop
