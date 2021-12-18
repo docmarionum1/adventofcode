@@ -15,18 +15,19 @@ fn expand(pair: String, steps: u8) -> HashMap<String, u64> {
         match &RULES {
             Some(r) => {
                 let middle_char = &r[&pair];
-                // let mut result = expand(format!("{}{}", pair[0..1], middle_char), steps - 1, rules);
-                // let result_right = expand(format!("{}{}", middle_char, pair[1..2]), steps - 1, rules);
+
                 let mut left_pair = pair[0..1].to_string();
                 left_pair.push_str(&middle_char);
                 let mut result = expand(left_pair, steps - 1);
-                //let result_right = expand(format!("{}{}", middle_char, pair[1..2]), steps - 1, rules);
-                let mut right_pair = String::from(middle_char); //pair[0..1].to_string();
+
+                let mut right_pair = String::from(middle_char);
                 right_pair.push_str(&pair[1..2]);
                 let result_right = expand(right_pair, steps - 1);
+
                 for (k, v) in result_right {
                     *result.entry(k).or_default() += v;
                 }
+
                 *result.entry(middle_char.to_string()).or_default() += 1;
                 result
             }
