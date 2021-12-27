@@ -38,9 +38,10 @@ print("Part 1:", get_shortest_path(m))
 def inc(map, i):
     new_map = (map.copy() + i) % 10
     return np.where(new_map < map, new_map + 1, new_map)
-    return map
 
 full_map = np.hstack([inc(m, i) for i in range(5)])
 full_map = np.vstack([inc(full_map, i) for i in range(5)])
+
+print(full_map[-1])
 
 print("Part 2:", get_shortest_path(full_map))
