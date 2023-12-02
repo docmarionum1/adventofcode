@@ -1,2 +1,4 @@
 .ipynb_checkpoints
 target
+__pycache__
+**.egg-info
