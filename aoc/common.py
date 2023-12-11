@@ -5,6 +5,7 @@ import functools
 import math
 import re
 import string
+import itertools
 
 import numpy as np
 import pandas as pd
@@ -46,3 +47,6 @@ def map2(t, f1=lambda x: x, f2=lambda x: x):
 
 def read_grid(**kwargs):
   return np.array(read_input(**kwargs, mapper=list))
+
+def print_grid(grid):
+  print("\n".join(["".join(g) for g in grid]))
