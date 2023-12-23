@@ -1,5 +1,3 @@
-from aoc.common import *
-
 def parse_line(line):
   return list(map(int, re.match(r'(\d+),(\d+),(\d+)~(\d+),(\d+),(\d+)', line).groups()))
 
@@ -72,9 +70,9 @@ def part1():
     if all(len(supported_by[l]) > 1 for l in blocks_supported):
       count += 1
 
-  return supports, count
+  return supports, supported_by, count
 
-supports, count = part1()
+supports, supported_by, count = part1()
 print("Part 1:", count)
 
 def part2():
@@ -92,4 +90,22 @@ def part2():
 
   return count
 
+# Use supports and supported by to figure out part 2 instead of simulating
+def part2_v2(label):
+  fell = set([label])
+  to_process = [label]
+
+  while to_process:
+    label = to_process.pop()
+    if label not in supports:
+      continue
+
+    for l in supports[label]:
+      if set(supported_by[l]).issubset(fell):
+        fell.add(l)
+        to_process.append(l)
+
+  return len(fell) - 1
+
 print("Part 2:", part2())
+print("Part 2 v2:", sum(part2_v2(l) for l in supports))
