@@ -11,6 +11,8 @@ import heapq
 
 import numpy as np
 import pandas as pd
+from tqdm.notebook import tqdm
+from tqdm.contrib.concurrent import process_map
 
 
 # Helper functions
@@ -27,7 +29,6 @@ def process_input(inp, mapper=None, delim='\n', strip=True):
     lines = list(map(mapper, lines))
 
   return lines
-
 
 def read_input(filename='input.txt', text=None, **kwargs):
   if not text:
@@ -52,3 +53,12 @@ def read_grid(**kwargs):
 
 def print_grid(grid):
   print("\n".join(["".join(g) for g in grid]))
+
+def np_grid_to_dict(grid):
+  return {(j,i): grid[j,i] for j, i in np.ndindex(grid.shape)}
+
+def neighbors(j, i, include_diagonals=False):
+  n = [(j+1, i), (j-1, i), (j, i+1), (j, i-1)]
+  if include_diagonals:
+    n += [(j+1, i+1), (j+1, i-1), (j-1, i+1), (j-1, i-1)]
+  return n
