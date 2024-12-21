@@ -2,7 +2,7 @@ from aoc.common import *
 
 cutoff = 100
 
-grid = np_grid_to_dict_complex(read_grid())
+grid = read_grid(return_type="dict")
 
 start = [k for k, v in grid.items() if v == "S"][0]
 end = [k for k, v in grid.items() if v == "E"][0]
@@ -13,7 +13,7 @@ for cell, value in grid.items():
   if value == "#":
     continue
 
-  for n in neighbors_complex(cell):
+  for n in neighbors(cell):
     if grid.get(n, "#") != "#":
       G.add_edge(cell, n, cost=1)
 

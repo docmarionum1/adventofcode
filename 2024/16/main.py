@@ -1,6 +1,6 @@
 from aoc.common import *
 
-grid = np_grid_to_dict_complex(read_grid())
+grid = read_grid(return_type="dict")
 
 dirs = ["East", "South", "West", "North"]
 
@@ -11,7 +11,7 @@ for cell, value in grid.items():
   if value == "#":
     continue
 
-  for i, (d, n) in enumerate(zip(dirs, neighbors_complex(cell))):
+  for i, (d, n) in enumerate(zip(dirs, neighbors(cell))):
 
     # Return to cell without direction
     if value == "E":

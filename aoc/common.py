@@ -10,6 +10,7 @@ import string
 import itertools
 import networkx as nx
 import heapq
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -65,7 +66,7 @@ def grid_to_nx(grid, invalid_char="#", neighbor_data=None, **kwargs):
         G.add_edge(cell, n, **attr)
   return G
 
-def read_grid(return_type="np", **kwargs):
+def read_grid(return_type: Literal["np", "dict", "nx"] = "np", **kwargs):
   grid = np.array(read_input(**kwargs, mapper=list))
 
   if return_type == "dict":
