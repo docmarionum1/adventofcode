@@ -18,7 +18,7 @@ from tqdm.contrib.concurrent import process_map
 
 
 # Helper functions
-def process_input(inp, mapper=None, delim='\n', strip=True):
+def process_input(inp, mapper=None, delim='\n', strip=True, **kwargs):
   if strip:
     inp = inp.strip()
 
@@ -51,30 +51,31 @@ def map2(t, f1=lambda x: x, f2=lambda x: x):
 
   return f1(t[0]), f2(t[1])
 
-def read_grid(**kwargs):
-  return np.array(read_input(**kwargs, mapper=list))
+def grid_to_nx(grid, invalid_char="#", neighbor_data=None, **kwargs):
+  G = nx.DiGraph()
+  for cell, value in grid.items():
+    for n in neighbors(cell, data=neighbor_data):
+      if isinstance(n, tuple):
+        n, data = n
+        attr = {neighbor_data: data}
+      else:
+        attr = {}
 
-def print_grid(grid):
-  print("\n".join(["".join(map(str, g)) for g in grid]))
+      if grid.get(n, invalid_char) != invalid_char:
+        G.add_edge(cell, n, **attr)
+  return G
 
-def np_grid_to_dict(grid):
-  return {(j,i): grid[j,i] for j, i in np.ndindex(grid.shape)}
+def read_grid(return_type="np", **kwargs):
+  grid = np.array(read_input(**kwargs, mapper=list))
 
-def np_grid_to_dict_complex(grid):
-  return {complex(j,i): grid[j,i] for j, i in np.ndindex(grid.shape)}
+  if return_type == "dict":
+    return np_grid_to_dict(grid)
+  elif return_type == "nx":
+    return grid_to_nx(np_grid_to_dict(grid), **kwargs)
+  elif return_type == "np":
+    return grid
 
-def neighbors(j, i, include_diagonals=False):
-  n = [(j+1, i), (j-1, i), (j, i+1), (j, i-1)]
-  if include_diagonals:
-    n += [(j+1, i+1), (j+1, i-1), (j-1, i+1), (j-1, i-1)]
-  return n
-
-def neighbors_complex(a, include_diagonals=False):
-  #n = [a + 1, a - 1, a + 1j, a - 1j]
-  # E, S, W, N
-  return [a + 1j, a + 1, a - 1j, a - 1]
-
-def print_complex_grid(grid):
+def print_dict_grid(grid):
   np_grid = np.zeros((
       int(max([i.real for i in grid.keys()])) + 1,
       int(max([i.imag for i in grid.keys()])) + 1
@@ -84,7 +85,26 @@ def print_complex_grid(grid):
 
   print_grid(np_grid)
 
-def make_complex_grid(h, w):
+def print_grid(grid):
+  if isinstance(grid, dict):
+    print_dict_grid(grid)
+  else:
+    print("\n".join(["".join(map(str, g)) for g in grid]))
+
+def np_grid_to_dict(grid):
+  return {complex(j,i): grid[j,i] for j, i in np.ndindex(grid.shape)}
+
+def neighbors(a, include_diagonals=False, data=None):
+  n = [a + 1j, a + 1, a - 1j, a - 1]
+
+  if data == "compass":
+    return list(zip(n, ["E", "S", "W", "N"]))
+  elif data == "arrow":
+    return list(zip(n, [">", "v", "<", "^"]))
+  else:
+    return n
+
+def make_grid(h, w):
   return {complex(j,i): "." for j in range(h) for i in range(w)}
 
 def make_nx_grid(h, w):
@@ -92,7 +112,7 @@ def make_nx_grid(h, w):
   for j in range(h):
     for i in range(w):
       node = complex(j, i)
-      for n in neighbors_complex(node):
+      for n in neighbors(node):
         if n.real >= 0 and n.real < h and n.imag >= 0 and n.imag < w:
           G.add_edge(node, n)
   return G
