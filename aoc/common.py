@@ -5,6 +5,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 import functools
 import math
+import os
 import re
 import string
 import itertools
