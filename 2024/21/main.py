@@ -44,10 +44,7 @@ def press_len(presses):
   for i in range(len(presses)-1):
     a = directional_coords[presses[i]]
     b = directional_coords[presses[i+1]]
-    l += abs(a.real - b.real) + abs(a.imag - b.imag) + (
-        # Heuristic to keep runs of arrows together
-        .1 if presses[i] != presses[i+1] else 0
-    )
+    l += abs(a.real - b.real) + abs(a.imag - b.imag)
 
   return l
 
